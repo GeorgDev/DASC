@@ -1,0 +1,207 @@
+---
+title: "Sourcing html data with R"
+output:
+  pdf_document: 
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+  html_notebook: default
+urlcolor: blue
+---
+
+# Task description
+
+Parse course information from FH Technikum's CIS web site.
+
+Steps:
+
+- Explore html code
+- Start parsing information for one course
+- Create loop for getting several course infos
+
+# Required packages
+
+```{r message = FALSE}
+library(tidyverse)
+library(magrittr)
+library(rvest)
+```
+
+# One course page
+
+Example: Accounting in BWI1bb
+
+URL: [https://cis.technikum-wien.at/addons/lvinfo/cis/view.php?lehrveranstaltung_id=34425&studiensemester_kurzbz=WS2018](https://cis.technikum-wien.at/addons/lvinfo/cis/view.php?lehrveranstaltung_id=34425&studiensemester_kurzbz=WS2018)
+
+Load one page:
+
+```{r }
+page <- read_html("https://cis.technikum-wien.at/addons/lvinfo/cis/view.php?lehrveranstaltung_id=34425&studiensemester_kurzbz=WS2018")
+```
+
+Explore content:
+
+```{r}
+page
+html_nodes(page, "*")
+```
+
+## Upper table
+
+Idea:
+
+- extract table using html_table()
+- transpose table to get data column-wise
+
+```{r}
+tmp <- 
+  page %>%
+  html_nodes("table") %>%
+  first() %>%
+  html_table()
+tmp
+```
+
+Transpose table:
+
+```{r}
+course <- tmp %>% select(X2) %>% t()
+course
+```
+
+Fix column names:
+
+```{r}
+colnames(course) <- t(tmp[,1] %>% mutate_at("X1", str_replace, ":", ""))
+course <- as.tibble(course, .name_repair = make.names)
+```
+
+Modify data types of numeric variables:
+
+```{r}
+course %<>%
+  mutate(
+    Semester = parse_integer(Semester),
+    ECTS = parse_double(ECTS),
+    Incomingplätze = parse_integer(Incomingplätze)
+  )
+course
+```
+
+## Lower table
+
+Approach:
+
+- Select section via `lvinfo` class
+- Headings: all `<h2>` tags
+- Content: all tags with `lv-info` class
+- challenge: some sections have bullet points
+
+```{r}
+heads <- page %>%
+  html_nodes(".lvinfo") %>%
+  html_nodes("h2") %>%
+  html_text()
+heads
+```
+
+```{r}
+FUN <- function(i) {
+  if (length(html_children(i)))
+      paste0(html_text(html_children(html_children(i))), collapse = "\n")
+  else
+     html_text(i)
+}
+
+values <- page %>%
+  html_nodes(".lvinfo_data") %>%
+  map(FUN)
+
+values
+```
+
+create tibble and add to `course`:
+
+```{r}
+names(values) <- heads
+course <- cbind(course, as.tibble(values))
+```
+
+## Combine to function
+
+```{r}
+parse_one_course <- 
+  function(id = 34425, term = "WS2018")
+  {
+    ## get html
+    url <- paste0("https://cis.technikum-wien.at/addons/lvinfo/cis/view.php?lehrveranstaltung_id=", id, "&studiensemester_kurzbz=", term)
+    page <- read_html(url)
+    
+    ## upper table
+    tmp <- 
+      page %>%
+      html_nodes("table") %>%
+      first() %>%
+      html_table()
+    
+    course <- tmp %>% select(X2) %>% t()
+
+    #Diese Zeilen:
+    #colnames(course) <- str_replace(tmp[,1], ":", "")
+    #course <- as.tibble(course)
+
+    #Durch diese ersetzt:
+    colnames(course) <- t(tmp[,1] %>% mutate_at("X1", str_replace, ":", ""))
+    course <- as.tibble(course, .name_repair = make.names)
+    
+    
+    course %<>%
+      mutate(
+        Semester = parse_integer(Semester),
+        ECTS = parse_double(ECTS),
+        Incomingplätze = parse_integer(Incomingplätze)
+      )
+  
+    ## lower table
+    heads <- page %>%
+      html_nodes(".lvinfo") %>%
+      html_nodes("h2") %>%
+      html_text()
+    
+    FUN <- function(i) {
+      if (length(html_children(i)))
+        paste0(html_text(html_children(html_children(i))),
+               collapse = "\n")
+      else
+        html_text(i)
+    }
+    
+    values <- page %>%
+      html_nodes(".lvinfo_data") %>%
+      map(FUN)
+    
+    names(values) <- heads
+    course <- cbind(course, as.tibble(values))
+    
+    course
+  }
+```
+
+# Loop over several courses
+
+```{r}
+parse_courses <- 
+function(ids = 1, term = "WS2018")
+{
+    lapply(ids, parse_one_course, term)
+    
+}
+
+ids = c(34509, 34473, 34496)
+result <- 
+  ids %>% 
+  parse_courses %>%
+  bind_rows()
+summary(result)
+```
+

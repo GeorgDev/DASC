@@ -1,0 +1,45 @@
+---
+title: "Reading Data from Excel Sheets"
+output:
+  pdf_document: 
+    latex_engine: xelatex
+  html_notebook: default
+---
+
+---
+```{r, message=FALSE}
+library(tidyverse)
+library(readxl)
+```
+
+First, get the sheet names:
+
+```{r}
+path = "data/EU_Stockmarkets.xlsx"
+sheets = excel_sheets(path)
+sheets
+```
+
+Try one sheet:
+
+```{r}
+read_excel(path, sheet = "1991")
+```
+
+Loop over all sheets:
+
+```{r}
+data = lapply(sheets, read_excel, path = path)
+names(data) = sheets
+```
+
+Combine subtables. Add sheet names as extra column. Fix name of index column.
+
+```{r}
+data = bind_rows(data, .id = "Year") %>% 
+  rename("Period" = "...1") %>% 
+  mutate(Period = parse_integer(Period),
+         Year = parse_integer(Year))
+data
+```
+

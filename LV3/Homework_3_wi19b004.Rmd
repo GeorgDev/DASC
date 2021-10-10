@@ -1,0 +1,81 @@
+---
+title: "Homework_3_wi19b004"
+author: "Michael Scheidl"
+date: "26 09 2021"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+    number_sections: yes
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Assignment
+
+Choose a web site of your choice that contains tabular data worth being harvested. You could look at sites like Wikipedia, or official sites like Statistik Austria offering information.
+Retrieve the data using tidiyverse and rvest packages so it becomes a "tidy" tibble. If the data is in "wide" format, transform into long format. If it is in long format, transform into wide format. Document your steps in a Notebook.
+
+# Solution
+
+## Load Libraries
+
+```{r message = FALSE, results='hide'}
+library(tidyverse)
+library(magrittr)
+library(rvest)
+```
+
+## Load Website Source Code
+
+```{r warning=FALSE, error=FALSE, results='hide'}
+page <- read_html("https://de.wikipedia.org/wiki/Liste_von_Erdbeben_in_%C3%96sterreich")
+html_nodes(page, "*") # Inspect Page Source
+
+```
+
+## Parse Table from HTML Code
+
+```{r}
+tmp <- 
+  page %>%
+  html_nodes("table") %>% # Search for table HTML-Nodes
+  first() %>% # Use the First Node
+  html_table() # Scrape table into tibble
+tmp
+```
+
+## Clean Table
+
+
+```{r}
+tmp <- select(tmp,-last_col())
+tmp <- tmp %>% mutate(across(where(is.character), ~na_if(., "-"))) %>% drop_na() # Convert - to NA and Filter wrong entries.
+tmp <- tmp %>% mutate_all(str_replace_all, " Uhr", ":00") # Unify Time
+tmp <- tmp %>% separate(`Zeit(UTC)`, c("Hour", "Minute"), sep = ":") %>% 
+  mutate(Hour = str_pad(Hour, "0", width = 2, side = "left")) %>% 
+  unite(Hour,Minute, sep = ":", col = "Zeit(UTC)") %>% 
+  separate(`ZeitMEZ /MESZ`, c("Hour", "Minute"), sep = ":") %>% 
+  mutate(Hour = str_pad(Hour, "0", width = 2, side = "left")) %>% 
+  unite(Hour,Minute, sep = ":", col = "ZeitMEZ /MESZ") #Unify Time Columns
+# Unify Month names -> Unifying the Complete Date didnt work´because of an issue with a " "-Error
+tmp <- tmp %>% mutate_all(str_replace_all, "März", "Mrz.") 
+tmp <- tmp %>% rename(Intentency = I, Magnitude = M, Depth = T) # Give the columns a speaking Name
+tmp
+```
+
+## In Long Format
+
+
+```{r}
+tmp_long <- tmp %>%
+  # Combine Intentency,Magnitude,Depth to column "Stat" and show the corresponding value in column "Value"
+gather(key = "Stat", value = "Value", Intentency,Magnitude,Depth)
+# Print Tibble sorted and redundant/unimportant columns hidden
+tmp_long %>% arrange(`Datum(UTC)`) %>% select(-`ZeitMEZ /MESZ`,-Beschreibung) 
+```
+
+

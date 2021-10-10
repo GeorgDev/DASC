@@ -1,0 +1,118 @@
+---
+title: "LV4"
+subtitle: "ggplot2 Package"
+author: "Michael Scheidl"
+date: "29 09 2021"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      out.width = "70%", # make graphs smaller 
+                      fig.align = "center") # center graphs
+```
+
+# Libraries {-}
+```{r message=FALSE, warning=FALSE, results='hide'}
+library(tidyverse)
+```
+
+\newcommand{\exercise}[1]{\fbox{\parbox{\textwidth}{\bf \underline{Exercise:}\newline #1}}}
+
+# Overview
+
+- Plotting different data variables in graphs
+- using `ggplot2` package
+
+
+# Data
+
+- `disp`means displacement in `in²`
+- `wt` means weight in `1000 lbs`
+
+
+```{r}
+# ?mtcars
+mtcars %>% knitr::kable(caption = "Data for Visualisation")
+```
+
+# Using `ggplot` Framework
+
+```{r}
+ggplot(mtcars)
+```
+
+
+## Add aestetics
+
+```{r}
+g <- mtcars %>% ggplot(aes(x=disp,y=mpg))
+g
+```
+
+## Add Datapoints
+
+```{r}
+g + geom_point()
+```
+
+## Add Line
+
+```{r}
+g + geom_line() # Note - not very useful
+```
+
+
+
+## Add more variables
+
+```{r}
+g <- mtcars %>% rownames_to_column("car_name") %>% as_tibble() %>% ggplot(aes(x=disp,y=mpg)) + geom_point(aes(size=qsec, col = cyl)) +
+xlab("engine size") +
+ylab("Mile per Gallon") +
+labs(caption = "Fuel efficiency", title = "Miles different cars achieve w.r.t. engine size", subtitle = paste("Number of cars", nrow(mtcars))) #+ # paste0 = paste without " "
+  #geom_text(aes(label = car_name)) # Add text to points
+g
+```
+### Interpretation
+
+- Engine Size and miles per gallon have a relation 
+  - the higher the engine size the lower a car can travel per gallon
+  
+- bigger engine size goes together with a larger number of cylinders
+- very small engine size have highqsec
+
+## facets
+
+```{r}
+g + facet_wrap(~gear)
+```
+
+# Exercise
+
+  \exercise{Using the \texttt{UScereal} data from the \texttt{MASS} package, visualize the relationship of calories, sugars and fat. Additionally, highlight whether the product has been enriched with vitamins. Use appropriate titles and legends.}
+\exercise{As an extension to the previous plot, show the information separately for each manufacturer, using facets. Similarly, create a plot for the shelves using groups.}
+
+## Data `UScereal`
+
+```{r}
+data(UScereal, package = "MASS")
+UScereal
+```
+```{r}
+g2 <- UScereal %>% rownames_to_column("Name") %>% as_tibble() %>% ggplot(aes(x=sugars,y=calories)) + geom_point(aes(size=fat, col = vitamins)) +
+  labs(caption = "US Cerial for diets", title = "kcal w.r.t. sugars", subtitle = paste("Number of searials in Dataset", nrow(UScereal)), y = "Sugarcontent", x = "Calories kcal")
+g2
+
+# scale_color_brewer(palette = "red")
+# theme(legend.position = "left")
+```
+```{r}
+g2 + facet_wrap(~mfr)
+g2 + geom_smooth(aes(group = shelf))
+```
+

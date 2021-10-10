@@ -1,0 +1,112 @@
+---
+title: "Accessing relational databases with R"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: yes
+    toc: no
+---
+
+\newcommand{\exercise}[1]{\fbox{\parbox{\textwidth}{\bf \underline{Exercise:}\newline #1}}}
+
+```{r setup, include=FALSE}
+## set global chunk options
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,
+                      fig.align = "center")
+```
+
+---
+```{r}
+library(tidyverse)
+library(odbc)
+```
+# Connect to database
+
+```{r}
+con <- dbConnect(odbc(),
+                 driver = "ODBC Driver 17 for SQL Server",
+                 server = "wi-projectdb.technikum-wien.at",
+                 uid = "IMH", 
+                 pwd = "imh")
+dbListTables(con, schema = "dbo")
+```
+
+# More Secure Version
+
+```{r}
+con <- dbConnect(odbc(),
+                 driver = "ODBC Driver 17 for SQL Server",
+                 server = "wi-projectdb.technikum-wien.at",
+                 uid = Sys.getenv("UID_FHTW_PROJECTDB"), 
+                 pwd = Sys.getenv("PWD_FHTW_PROJECTDB"))
+
+#Sys.setenv(UID_FHTW_PROJECTDB = "IMH", PWD_FHTW_PROJECTDB = "imh") # Set it in my Envirnment - NOT HERE
+# Path for the File: C:\Users\exploFH\Documents\.Renviron <- Same as Above but strings are set without "
+
+```
+
+# Get Library Path
+
+```{r}
+.libPaths()
+```
+
+
+# Test SQL
+
+```{r}
+data = dbGetQuery(con, "select * from iris")
+head(data)
+```
+
+# Integration with tidyverse
+
+```{r}
+irisdb <- tbl(con, "iris")
+```
+
+Query:
+
+```{r}
+results <- 
+  irisdb %>%
+  filter(Sepal_Width > 3) %>%
+  group_by(Species) %>%
+  summarise(Sepal_avg = mean(Sepal_Width), count = n()) %>%
+  arrange(desc(count))
+results
+```
+
+Behind the scenes:
+
+```{r message=TRUE}
+results %>% show_query()
+```
+
+# Integration with Markdown
+
+```{r}
+minlength = 3;
+```
+
+SQL Chunk (with `minsize` as parameter and `result` as output variable):
+
+```{sql connection=con, output.var = "result"}
+select Petal_Width from iris
+where Sepal_Length > ?minlength
+```
+
+```{r}
+head(result)
+```
+
+
+# Close connection
+
+```{r}
+dbDisconnect(con)
+```
+
+# Exercise
+
+\exercise{Using the `iris` table, for each species, find out the number of flowers with a sepal length exceeding 3. Create both an SQL statement and an R statement using the tidyverse framework!}
