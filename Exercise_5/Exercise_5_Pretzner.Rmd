@@ -1,18 +1,64 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Exercise 5 Pretzner"
+subtitle: "Two Variable Visualisation"
+author: "Georg Pretzner"
+date: "10 10 2021"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+    number_sections: yes
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      out.width = "70%", # make graphs smaller 
+                      fig.align = "center") # center graphs
+```
+
+# Libraries {-}
+```{r message=FALSE, warning=FALSE, results='hide'}
+library(tidyverse)
+library(mosaicData)
+```
+
+
+# Exercise 5
+
+For the following exercises, two variables are given. Choose a suitable visualization method for
+each of them, and also for their relationship (so create three figures in total). Choose a “Brewer”
+color palette (using scale_color_brewer(), scale_fill_brewer(), scale_color_distiller() or
+scale_fill_distiller()).
+
+Variables:
+
+`wt` and `smoke` for the Gestation data (`mosaicData`)
+
+
+# 
 
 ```{r}
-plot(cars)
+data(Gestation, package = "mosaicData")
+head(Gestation)
 ```
-asdasd
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+ggplot(Gestation, aes(smoke, wt, fill=smoke)) + 
+  geom_boxplot() + 
+  xlab("Smoke") +
+  scale_color_brewer(palette = 8)
+```
+
+
+
+```{r}
+ggplot(Gestation, aes(x = wt, fill = wt)) +
+geom_density() +
+facet_wrap(~smoke)
+```
+
+
+
