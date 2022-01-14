@@ -1,0 +1,72 @@
+---
+title: "R Warmup - Exercise Sheet - wi19b004"
+author: "MS"
+date: "13 9 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Override Print for varyvec Class
+
+```{r results='hold'}
+print.varyvec <- function(a){
+  lapply(a, custprint)
+}
+```
+
+This codeblock overrides the print functionality for Variables of the Class `varyvec`.
+`lapply` calls the custom function `custprint` for each vector in the list a.
+
+
+# Define Function for Custom Output
+
+```{r results='hold'}
+custprint <- function(a){
+  cat(a[1],"...", a[length(a)-1], "\n", sep="")
+}
+```
+
+This function is called by the custom `print()` function for the class `varyvec`. It prints the first element of the provided `a` vector with `a[1]` and the last element of the vector with `a[length(a)-1]`. It concatenates "..." in between and a new line at the end, with no separator between via the function `cat()`.
+
+
+# Define varyvec Function as required
+
+```{r results='hold'}
+varyvec <- function(a,b){
+  retlist <- list(seqfromAto1 = a:1, seqevenintfromAto1 = as.integer(subset(a:1L, a:1L %% 2L == 0L)), seqoddintfromAto1 = as.integer(subset(a:1L, a:1L %% 2L == 1L)), seqsquaredintfromAto1 = as.integer((a:1L)^2), seqsquaredintfromAto1smallerB = as.integer(subset(a:1L, a:1L > b)))
+  class(retlist) <- "varyvec"
+  varyvec <- retlist
+}
+```
+
+Defines the Function `varyvec(a, b)` and creates a list of vectors. These are:
+
+  - sequence from a to 1 with `a:1`
+  - sequence of all even integers from a to 1 with `as.integer(subset(a:1L, a:1L %% 2L == 0L))`
+    - The subset ensures, that the modulo of 2 is 0, which are only even numbers
+  - sequence of all odd integers from a to 1 with `as.integer(subset(a:1L, a:1L %% 2L == 1L))`
+    - The subset ensures, that the modulo of 2 is 1, which are only odd numbers
+  - sequence of all squared integers from a to 1 with `as.integer((a:1L)^2)`
+  - sequence of all integers from a to 1, not smaller than b with `as.integer(subset(a:1L, a:1L > b))`
+    - The subset ensures, that no number is smaller than b
+It also sets the class of the list to `varyvec` and returns it.
+
+
+# Show RAW Output of varyvac
+
+```{r results='hold'}
+unclass(varyvec(10L,4L))
+```
+
+The `unclass()` ensures, that the custom print function isn´t called. This Output shows, that the returned list of `varyvec` contains all correct vectors in a named list.
+
+# Show functionality
+```{r results='hold'}
+returnlist <- varyvec(10L,4L)
+returnlist
+```
+
+This codeblock calls the `varyvec(a,b)` function and stores it´s return value in the variable `returnlist`. When printing this variable, the overridden print function is executed, which prints only the required output for each vector.

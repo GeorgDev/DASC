@@ -1,0 +1,144 @@
+---
+title: "Startup Investments Dashboard"
+author: "Pretzner & Scheidl"
+date: "10 1 2022"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(DT)
+library(plotly)
+library(dplyr)
+```
+
+# Page 1
+# Page 2
+<h1>html text</h1>
+## Column 1{data-width=650}
+### Data-Box 1
+### Data-Box 2
+## Column 2{data-width=350, .tabset}
+
+### Tab 1
+```{r}
+datatable(mtcars, extensions = 'Buttons',
+          options = list(
+            dom = 'Bfrtip',
+            buttons = c('copy', 'print', 'csv') # add buttons tlike csv-download
+          ))
+```
+
+### Tab 2
+```{r}
+ggplot(data = mtcars, aes(x=wt, y=qsec)) + geom_point()
+```
+
+### Temperature Gauge
+```{r}
+data <- mosaicData::Riders
+gauge(max(data$highT), min=0, max=100, 
+      gaugeSectors(success=c(0,40), # Set Gauge Limits
+                   warning = c(41,70),
+                   danger = c(71,100)))
+```
+
+
+Plotly {style="position:relative;"}
+========================================================
+
+Column {style="height:100pc;"}
+--------------------------------------------------------
+
+```{r,include=FALSE}
+data(diamonds,package='ggplot2')
+diamonds
+```
+
+### Chart 1
+Simple Plot with only the count of entries per Cut
+```{r}
+diamonds %>% plot_ly(x = ~cut)
+```
+
+
+### Chart 2
+Grouped Bar chart
+```{r}
+#add title
+#add brewer color palette
+diamonds %>% plot_ly(x = ~cut, color = ~clarity, colors = 'Accent') %>% 
+  layout(title='Verteilung von Clarity nach Cut', xaxis=list(title='Cut'), yaxis=list(title='Count'))
+```
+
+### Stacked Barchart
+```{r}
+#add barmode
+diamonds %>%
+  plot_ly(x = ~cut, color = ~clarity) %>% 
+  layout(barmode = 'stack')
+```
+
+### Scatterplot
+```{r}
+diamonds[sample(nrow(diamonds), 1000), ] %>% #Use only 1000 rows
+  plot_ly(x = ~carat, y = ~price, color = ~clarity)
+```
+
+### Customize Hover Text
+
+```{r}
+#add Brewer Color
+#add hover text
+diamonds[sample(nrow(diamonds), 1000), ] %>% #Use only 1000 rows
+  plot_ly(x = ~carat, y = ~price, color = ~cut,
+          text=~paste('Price', price,'<br>Cut:', cut)
+          ) #Hover Text
+```
+
+### Pie Chart
+
+```{r}
+diamonds %>% count(cut) %>% 
+  plot_ly(values = ~n, labels=~cut, type='pie')
+```
+
+### Multiple pie charts
+
+```{r}
+diamonds %>% plot_ly() %>% 
+  add_pie(data = count(diamonds, cut), labels = ~cut, values = ~n,
+        name = "Cut", domain = list(x = c(0, 0.33), y = c(0, 1))) %>%
+  add_pie(data = count(diamonds, color), labels = ~color, values = ~n,
+        name = "Color", domain = list(x = c(0.33, 0.66), y = c(0, 1))) %>%
+  add_pie(data = count(diamonds, clarity), labels = ~clarity, values = ~n,
+        name = "clarity", domain = list(x = c(0.66, 0.99), y = c(0, 1))) %>%
+  #add Color
+  #add Clarity
+  layout(title="Pie Chart with subplots") %>% 
+  hide_legend()
+```
+
+### Boxplot
+
+```{r}
+diamonds %>% 
+  plot_ly(y = ~price, type = 'box')
+```
+
+
+### Multiple Boxplot
+
+```{r}
+#add cut
+#set color black
+diamonds %>% 
+  plot_ly(y=~price,
+          x=~cut,
+          color = I('black')
+          ,type='box')
+```

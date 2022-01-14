@@ -1,0 +1,381 @@
+---
+title: "WarmingUp"
+subtitle: "BWI Specialisiation Data science"
+author: "MS"
+date: "8 9 2021"
+output: 
+  pdf_document:
+      toc: yes
+      toc_depth: 2
+      number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE
+                      #,results = 'hold' # For all Chunks
+                      )
+```
+
+# Overview
+
+-   IDE
+
+-   Basic data structure in R
+
+-   Advanced Data Structures in R
+
+    -   `data.frame()`
+
+-   Loops etc.
+
+# IDE
+
+Insert Chunks
+
+-   Strg + Alt + I
+
+Execute Chunk
+
+ - Strg + Enter (Line of code in chunk)
+ - Strg + Shift + Enter (Execute whole chunk)
+
+Menu Help
+
+-   Cheatsheets (Help -\> Cheat Sheets -\> RStudio IDE Cheat Sheet)
+
+Comment Out/In code or text
+
+- Strg + Shift + C
+
+Keyboard Shortcut Help
+ 
+ - Alt + Shift + K
+ 
+Insert History (Tab History) into Code Chunk
+
+  - Insert to Source
+  
+```{r}
+vec_a = c(1,2,3)
+vec_a
+```
+
+Many Tabs (lower right)
+
+ - File
+ - Packages
+ - Help
+ 
+ 
+```{r}
+#?mean
+#?str #Commented because its really going on my nerves!
+```
+ 
+Environment tab
+
+ - Shows all defined variables in the code
+ - available packages
+
+ 
+# Basic data structures
+
+Some Different basic data types in R are
+ 
+ - integers
+ - doubles
+ - strings
+ 
+data is organized in Vectors
+```{r results='hold'}
+vector_zahlen = c(1,2,5,7) #NOTE Chunk Option result='hold'
+vector_zahlen
+is.double(vector_zahlen)
+is.integer(vector_zahlen)
+```
+
+Get integer Values:
+
+```{r results='hold'}
+vector_zahlen = c(1L,2L,5L,7L) #NOTE Force Integer Values
+vector_zahlen
+is.double(vector_zahlen)
+is.integer(vector_zahlen)
+```
+
+Coersion of Basic data types
+
+ - Vector of basic types can only have one type -> coersion
+
+```{r results='hold'}
+vector_mixed <- c(1.0, 1L, "Data Science", TRUE)
+vector_mixed
+```
+- all coersed to character
+
+Creating vectors shortcuts to c() combine function
+
+```{r results='hold'}
+c(1,2,3,4,5)
+1:5
+```
+
+```{r results='hold'}
+seq(1,10,2) # NOTE step size = 2
+seq(from = 1,to = 10, by = 2)
+seq.int(1,10,2)
+```
+
+```{r results='hold'}
+is.integer(seq(1,10,2))
+is.integer(seq(from = 1,to = 10, by = 2))
+vector_integer <- as.integer(seq.int(1,10,2))
+is.integer(as.integer(seq.int(1,10,2)))
+```
+
+Replicate Elements of a vector or list
+
+```{r results='hold'}
+# ?rep
+rep(vector_integer, 3)
+rep(vector_integer, each=3)
+```
+
+
+## Indexing Data
+
+```{r results='hold'}
+vector_zahlen[1:2]
+vector_zahlen[c(1,2,4)]
+```
+## Named Vectors
+
+```{r results='hold'}
+vector_names <- c(zahl1 = 12L, zahl2 = 1212)
+vector_names
+```
+
+Indexing Named Vector
+
+```{r results='hold'}
+vector_names[1] # NOTE Call Vector by Position
+vector_names['zahl1'] # NOTE If Vector Elements have name you can call elements with name
+```
+
+Operations on vectors are vectorized
+
+```{r results='hold'}
+vector_integer * 1000 # NOTE Operation on all elements
+```
+
+
+```{r results='hold'}
+vector_names <- c("Ben", "David", "Joe")
+vector_names
+paste(vector_names, "is a friend of mine")
+```
+
+Works on INT and Char vectors
+
+# List
+
+__A List is a generic vector:__
+  - a list can contain different types (no coersion)
+  
+```{r results='hold'}
+l <- list(1:3, "foo", 3.0, list(2, "bar"))
+l
+```
+
+ - `[[]]` indication for a list
+
+
+
+## Indexing a list
+
+ - is a generic vector
+  - can be indexed like a vector
+
+```{r results='hold'}
+l[1:2]
+l[c(1,2)]
+```
+
+
+Get the content of a list entry
+
+```{r results='hold'}
+l[1] # NOTE a list
+l[[1]] # NOTE a vector
+is.list(l[1])
+is.list(l[[1]])
+```
+
+- function `mean()` requires a numeric vector
+
+```{r results='hold'}
+mean(l[[1]]) # NOTE Works
+try(
+mean(l[1]) # NOTE Leads to error
+)
+```
+
+## Named List
+
+```{r results='hold'}
+l_named <- list(a = 1:10, b = letters[1:10])
+```
+ 
+
+Indexing Named List:
+
+```{r results='hold'}
+# Extract element a with the numbers 1:10
+l_named[[1]]
+l_named$a # NOTE $ means a list -> doesn't work for a vector
+l_named[["a"]]
+```
+
+```{r results='hold'}
+#Returns a list
+l_named["a"]
+l_named[1]
+```
+
+# Attributes
+
+ - Attributes add additional informations to an R object
+ 
+```{r results='hold'}
+vector_with_attribute <- 1:5
+attr(vector_with_attribute, "creator") = "MyNameIsSlimShady"
+attr(vector_with_attribute, "date") = "08.09.2021"
+vector_with_attribute
+```
+ Show all Attributes of an Object with:
+```{r results='hold'}
+attributes(vector_with_attribute)
+attributes(vector_with_attribute)$creator
+```
+ 
+## Zwei Spezielle Attribute
+
+ - dim
+ - class
+
+```{r results='hold'}
+x = 1:8
+x
+```
+
+
+Set dim attribute
+
+```{r results='hold'}
+dim(x) <- c(2,4)
+x
+```
+
+Create 3 Dimensional Array
+
+```{r results='hold'}
+dim(x) <- c(2,2,2)
+x
+```
+
+
+Set Class Attribute
+
+```{r results='hold'}
+class(x) = "myclass"
+attributes(x)
+
+```
+
+
+ - Dim and class are special attributes because R works differently when these are set, they are frequently employed attributes
+ 
+# generic functions
+
+ - Work with the class attribute
+ - Use "myclass" from above
+ 
+```{r results='hold'}
+print.myclass <- function(x){
+  cat("array dimension", dim(x), "\n")
+}
+```
+ 
+Print an Object of class type "myclass"
+
+```{r results='hold'}
+x
+```
+
+
+
+# Data Frame
+
+ - a list of named vectors
+ - all vectors have the same length
+ - an attribute for rows is set `row.names`
+ 
+```{r results='hold'}
+df <- data.frame(Name = c("Andi", "Sepp", "Horst"), Alter = c(23L,25L,38L))
+df
+```
+
+Inspect df element
+```{r results='hold'}
+attributes(df)
+```
+Unclass df
+```{r results='hold'}
+df
+unclass(df)
+```
+
+
+# Loops and [ls}apply
+
+Instead of iterationg through a loop use `lapply` to apply a function to each element of the list.
+
+```{r results='hold'}
+lapply(df, summary)
+```
+
+
+```{r results='hold'}
+lapply(df, length)
+```
+
+
+Simplify output (instead of a list a vector)
+
+```{r results='hold'}
+sapply(df, length)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+---
+title: "HomeWork 1 - R Warmup wi19b013"
+author: "Georg Pretzner"
+date: "13 9 2021"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+    number_sections: yes
+---
+
+
+```{r}
+plot(presidents)
+```
+
+
+# Exercise 18 (Pretzner)
+
+Create a list that contains the data sets presidents, iris, Nile, and HairEyeColor. Create a function myclasses(x) taking a list of data sets and returning a named vector with the classes for each data set (use class()). The return value should be of class “myclasses”. Implement a print method that just informs about the total amount of data sets, and prints a comma-separated list of the data set names (use names()) and their corresponding data set class. Demonstrate the functions with the list initially created. Document all steps in an R-Markdown-notebook and upload the PDF on Moodle.
+
+
+
+
+
+```{r}
+myclasses <- funtion(x){
+  myclasses <- 
+  return(myclasses)
+}
+
+```
+
+
+# Datenstreckbrief
+
+List with Presidents, iris, Nile, and HairEyeColor
+
+```{r}
+l <- list(presidents, iris, Nile, HairEyeColor)
+
+l
+```
+
+
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

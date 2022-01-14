@@ -1,0 +1,103 @@
+---
+title: "Exercise 3 (Web Scraping)"
+author: "Georg Pretzner (wi19b013)"
+date: "26 9 2021"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      out.width = "70%", # make graphs smaller 
+                      fig.align = "center") # center graphs
+```
+
+
+# Libraries {-}
+
+Load the tidyverse library
+
+```{r message=FALSE, warning=FALSE, results='hide'}
+library(tidyverse)
+```
+
+# Assignment
+
+1. Create a scatterplot of the number of crossings per day volume against the high temperature that day 
+2. Separate your plot into facets by weekday 
+3. Add regression lines to the two facets
+
+# Dataset
+
+Load the dataset `RailTrail` from the package `mosaicData` is loaded
+
+```{r}
+data(RailTrail, package = "mosaicData")
+head(RailTrail)
+```
+
+
+
+# Visualization
+
+
+## Scatterplot Volume / HighTemp
+
+Scatterplot of the number of crossings per day `volume` against the high temparture that day
+
+
+```{r}
+g <- ggplot(RailTrail, aes(x=volume, y=hightemp)) +
+  geom_point() + 
+  xlab("estimated number of trail users that day (volume)") + 
+  ylab("daily high temperature (hightemp)") + 
+  labs(title = "crossings per day against the high temparture ", subtitle = paste("Number of RailTrails", nrow(RailTrail)))
+g
+```
+
+### Interpretation
+
+It can be seen that the higher the temperature, the higher the volume. However, when it gets too hot, the volume decreases again a little.
+
+
+## Facets
+
+Seperate the plot into facets by `weekday`
+
+
+```{r}
+g2 <- g + facet_wrap(~weekday)
+g2
+```
+
+### Interpretation
+
+The Facet shows that the volume is slightly lower on weekdays than on weekends. Also that on weekdays there is a certain amount of low temperatures, which is not the case on weekends.
+
+
+
+## Regression Line
+
+Add regression lines to the two facets
+
+```{r}
+g3 <- g2 + geom_smooth()
+g3
+```
+
+
+### Interpretation
+
+The regression line confirms our assumption of the scatterplot. With increasing temperature, the volume also increases, but weakens again from about 80°F onwards.
+
+
+
+
+
+
+
+
+

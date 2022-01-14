@@ -1,0 +1,122 @@
+---
+title: "Pretzner Georg (wi19b013)"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE,message=FALSE}
+library(flexdashboard)
+library(plotly)
+library(dplyr)
+```
+
+
+```{r}
+#Note: Wir verwenden für die Aufgabe das `mtcars` dataset, welches wir in `data` speichern.
+data <- mtcars
+```
+
+# Angabe
+
+GesamtAngabe -> Die Unterpunkte sind auch in den jeweiligen Submenues
+
+1. Erstellen Sie einen zweiten Reiter namens Exercise.
+2. Verwenden Sie 2 Spalten (Breite 650, 350).
+
+3. Erstellen Sie ein Scatterplot in der ersten Spalte mit plotly.
+
+- `MPG` soll durch `HP` erklärt werden.
+- Ergänzen Sie eine Farbkennzeichnung nach `cyl`.
+- Ändern Sie die Farbpalette auf eine beliebige.
+- Ändern Sie den Text im Mouse-Over, und zeigen Sie hier `HP` und `WT` an.
+- Fügen Sie einen Paragraphen mit textueller Beschreibung des Graphen hinzu.
+
+4. Erstellen Sie ein Boxplot-Diagramm in der zweite Spalte mit plotly
+
+- `HP` soll gruppiert nach `cyl` darstellt werden.
+- Geben Sie einen geeigneten Titel für den Plot an.
+- Wählen Sie eine Farbe für den gesamten Plot aus.
+- Fügen Sie einen Paragraphen mit textueller Beschreibung des Graphen hinzu.
+
+Hinweis: Verwenden Sie die `I()`-Methode für die Farbe
+
+# Excercise
+
+2. Verwenden Sie 2 Spalten (Breite 650, 350).
+
+## Column 1 (650) {data-width=650}
+
+Hier ist die Spalte 1
+
+
+
+
+3. Erstellen Sie ein Scatterplot in der ersten Spalte mit plotly.
+
+- `MPG` soll durch `HP` erklärt werden.
+- Ergänzen Sie eine Farbkennzeichnung nach `cyl`.
+- Ändern Sie die Farbpalette auf eine beliebige.
+- Ändern Sie den Text im Mouse-Over, und zeigen Sie hier `HP` und `WT` an.
+- Fügen Sie einen Paragraphen mit textueller Beschreibung des Graphen hinzu.
+
+```{r}
+data %>%
+  plot_ly(x = ~hp, y = ~mpg, color = ~cyl,
+          colors = 'Accent',
+          text=~paste('HP', hp,'<br>WT:', wt))
+```
+
+
+<p>
+Interpretation:
+
+- Je Mehr PS ein Auto hat, desto weniger sind die MPG. Also durch wachsende PS, sinkt die reichweite
+- Je mehr Cylinder ein Auto besitzt, umso mehr PS hat es.
+
+</p>
+
+
+## Column 2 (350) {data-width=350}
+
+Hier ist die Spalte 2
+
+
+4. Erstellen Sie ein Boxplot-Diagramm in der zweite Spalte mit plotly
+
+- `HP` soll gruppiert nach `cyl` darstellt werden.
+- Geben Sie einen geeigneten Titel für den Plot an.
+- Wählen Sie eine Farbe für den gesamten Plot aus.
+- Fügen Sie einen Paragraphen mit textueller Beschreibung des Graphen hinzu.
+
+Hinweis: Verwenden Sie die `I()`-Methode für die Farbe
+
+
+```{r}
+
+data %>% 
+  plot_ly(y=~hp,
+          x=~cyl,
+          color = I('black'),
+          type='box') %>% 
+  layout(title='Verteilung von HP nach Cyl', xaxis=list(title='Cyl'), yaxis=list(title='HP'))
+```
+
+
+<p>
+Interpretation:
+
+- Je mehr Cylinder ein Auto besitzt, umso mehr PS hat es.
+- Autos mit 4 Cyl haben im Durchschnitt zwischen 65 und 96 PS
+- Autos mit 4 Cyl haben im Durchschnitt zwischen 110 und 123 PS
+- Autos mit 4 Cyl haben im Durchschnitt zwischen 175 und 245 PS
+
+</p>
+
+
+
+
+
+
+
