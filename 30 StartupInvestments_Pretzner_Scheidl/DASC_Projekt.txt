@@ -1,0 +1,74 @@
+Es wird die Analyse "nachgebaut":
+
+https://www.kaggle.com/nikolajtrampedach/random-forrest-and-logistic-regression-auc-81-4
+
+mit ein paar Grafikideen von:
+
+https://towardsdatascience.com/data-analysis-of-10-000-ai-startups-5ea7e957e90
+
+
+
+Datenaufbereitung und Explorative Datenanalyse, speziell Visualisierung [20%]
+- Einlesen, Filtern (NA), Tibble/DF, 
+-> Shiny
+
+Modellierung (Klassifikation oder Regression) mit zumindest 3 Methoden, inkl. Parameter Tuning und Benchmarking [30%]
+- 
+
+
+
+Deployment des besten Modells mittels Webservice (und Webservice Test) [10%]
+
+Kurzpräsentation des Projekts/der Ergebnisse mittels Dashboards [10%]
+
+Zwei Extra-Features - zB neue Methoden, interaktive Visualisierungen [20%]
+
+Dokumentation und Einhaltung der Projekt-Richtlinien [10%]
+
+
+
+Thema: StartUp Investments - https://www.kaggle.com/arindam235/startup-investments-crunchbase
+
+Projektname: Thema_NachnameA_NachnahmeB
+Ordner: /data, /dashboard, /webservice
+Notwendig: self-contained, ZIP Datei
+
+Algorithmen:
+- Clustering
+-- Standort und Investmentsumme
+-- 
+
+
+Visualisierungen:
+
+
+Ideen:
+- Corona Bubble -> Market Volume
+
+
+
+Umsetzung:
+
+
+Descriptive:
+- Markets with highest investments
+- StartUPS investment overview
+- Investment per Sektor
+- Investment by Stage
+- Number of StartUps per Year
+- Covid Bubble Investment / Startups
+
+Analysis:
+- Correlation Matrix
+- Data Modeling and Tuning
+- Random Forest 
+- Model Tuning
+- Predicted Output
+- Regression
+- Model Tuning
+- Data Evaluation
+
+Deployment (on Real Data)
+
+
+Analysen fahren und dann mit Rest abfragen und am Dashboard anzeigen. YEEAH!

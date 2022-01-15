@@ -1,0 +1,87 @@
+---
+title: "StartupInvestments"
+author: "Georg Pretzner & Michael Scheidl"
+date: "10 1 2022"
+output: 
+  pdf_document:
+    toc: yes
+    toc_depth: 2
+    number_sections: yes
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Ausgangssituation
+
+
+
+
+Zur Analyse wurde das Datenset `https://www.kaggle.com/arindam235/startup-investments-crunchbase` von Kaggle herangezogen. 
+
+Ziel der Analyse ist, das Datenset auf die relevanten Daten zu filtern und mittels Random Forrest and Logistic Regression erfolgreiche StartUps vorherzusagen.
+Das Datenset beinhaltet Informationen über neu gegründete Unternehmen und Investitionen.
+Es wird untersucht, ob die Investitionen und andere Kriterien dazu beitragen, dass sich das Unternehmen in einem operativen / geschlossenen / erworbenen Stadium befinden.
+
+
+
+# Datenmanagement
+
+Die Daten wurden mit `read.csv()` eingelesen:
+
+
+## Daten einlesen
+
+```{r}
+data = read.csv("../data/investments_VC.csv")
+head(data)
+```
+
+Hier ist bla bla zu sehen?
+
+
+
+
+## Daten aufbereiten
+
+
+NA ansprechen? Manche sind "zwangsweiße NULL"
+-> Die richtigen Spalten rausfiltern (Status / founded, market, Coutry, fouding total, age first fund)
+
+UUnnedige Daten droppen (permalink, Homepage, )
+
+
+Daten ins richtige Format bringen.
+
+
+```{r}
+FUUUUUUUUUUU
+```
+
+
+
+
+# Random Forest
+
+
+## Modell Tuning 
+
+
+
+# Logistic Regression
+
+
+## Modell Tuning 
+
+
+
+# Deployment
+
+
+
+
+
