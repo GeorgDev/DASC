@@ -18,7 +18,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # Library's
 
 ```{r}
+library(ggplot2)
 library(tidyverse)
+library("keras")
+library(caret)
+library("train_test_split")
 ```
 
 
@@ -46,7 +50,7 @@ Es wird untersucht, ob die Investitionen und andere Kriterien dazu beitragen, da
 Die Daten wurden mit `read.csv()` eingelesen:
 
 ```{r}
-data = read.csv("../data/investments_VC.csv", header=TRUE))
+data = read.csv("../data/investments_VC.csv", header=TRUE)
 head(data, 30)
 str(data)
 ```
@@ -103,6 +107,10 @@ sind x von y Datensätze gedroppt.
 --Daten ins richtige Format bringen.
 
 ```{r}
+
+
+sapply(data, class)
+
 data <- data %>% mutate(founded_at = as.Date(founded_at, format = "%Y-%m-%d"),                        
                         first_funding_at = as.Date(first_funding_at, format = "%Y-%m-%d"),
                         last_funding_at = as.Date(last_funding_at, format = "%Y-%m-%d"),
@@ -119,8 +127,15 @@ UUnnedige Daten droppen (permalink, Homepage, )
 
 
 
+# Visualisierung
+
+
+# Model
 
 ```{r}
+set.seed(4711) # set seed for all models!
+model_lm = train(volume ~ hightemp, method = "lm", data = RailTrail)
+model_lm
 
 ```
 
@@ -129,12 +144,17 @@ sind x von y Datensätze gedroppt.
 
 
 
-
+- TOTAL INVESTMENT Ausrechen
 
 
 
 ```{r}
 FUUUUUUUUUUU
+```
+
+
+```{r}
+rp = rpart()
 ```
 
 

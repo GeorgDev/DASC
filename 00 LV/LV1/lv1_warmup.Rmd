@@ -43,7 +43,6 @@ Menu Help
 
 -   Cheatsheets (Help -\> Cheat Sheets -\> RStudio IDE Cheat Sheet)
 
-Comment Out/In code or text
 
 - Strg + Shift + C
 
