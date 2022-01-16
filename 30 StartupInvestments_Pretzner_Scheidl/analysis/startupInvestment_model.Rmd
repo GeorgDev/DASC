@@ -1,5 +1,5 @@
 ---
-title: "StartupInvestments"
+title: "Vorhersage erfolgreicher Startups"
 author: "Georg Pretzner & Michael Scheidl"
 date: "10 1 2022"
 output: 
@@ -14,6 +14,12 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+# Library's
+
+```{r}
+library(tidyverse)
+```
 
 
 # Ausgangssituation
@@ -31,31 +37,100 @@ Es wird untersucht, ob die Investitionen und andere Kriterien dazu beitragen, da
 
 # Datenmanagement
 
-Die Daten wurden mit `read.csv()` eingelesen:
+
 
 
 ## Daten einlesen
 
+
+Die Daten wurden mit `read.csv()` eingelesen:
+
 ```{r}
-data = read.csv("../data/investments_VC.csv")
-head(data)
+data = read.csv("../data/investments_VC.csv", header=TRUE))
+head(data, 30)
+str(data)
 ```
 
-Hier ist bla bla zu sehen?
+Anhand der `str()` Funktion ist zu erkennen, dass noch nicht alle Variablen in dem benötigten Format vorliegen.
+Daher werden im nächsten Schritt die relevanten Variablen in das richtige Format gebracht.
 
+
+
+-- NA ansprechen? Manche sind "zwangsweiße NULL"
+-- Variablen ins richtige Format bringen
+
+-- Funding Char to Int, Date to Date Format (relevant Columns)
+funding_total
+founded*
+
+```{r}
+
+
+str(data1)
+head(data1)
+```
 
 
 
 ## Daten aufbereiten
 
 
-NA ansprechen? Manche sind "zwangsweiße NULL"
--> Die richtigen Spalten rausfiltern (Status / founded, market, Coutry, fouding total, age first fund)
 
+-- Fehlende Werte auf NA setzen ("", -)
+-- Drop where status, founded*, market, country, fundingtot, age_first_ NA
+
+
+```{r}
+data <- data %>% mutate(across(c(status, market, founded_at, country_code, funding_total_usd, last_funding_at), ~na_if(., "")))
+data$funding_total_usd <- na_if(data$funding_total_usd, " -   ")
+
+```
+
+
+
+Drop NA
+
+```{r}
+sum(is.na(data$funding_total_usd))
+data <- drop_na(data)
+sum(is.na(data))
+```
+
+
+sind x von y Datensätze gedroppt.
+
+
+--Daten ins richtige Format bringen.
+
+```{r}
+data <- data %>% mutate(founded_at = as.Date(founded_at, format = "%Y-%m-%d"),                        
+                        first_funding_at = as.Date(first_funding_at, format = "%Y-%m-%d"),
+                        last_funding_at = as.Date(last_funding_at, format = "%Y-%m-%d"),
+                        funding_total_usd  = as.numeric(gsub(",", "", data$funding_total_usd))
+                           ) 
+```
+
+
+
+
+
+-> Die richtigen Spalten rausfiltern (Status / founded, market, Coutry, fouding total, age first fund)
 UUnnedige Daten droppen (permalink, Homepage, )
 
 
-Daten ins richtige Format bringen.
+
+
+```{r}
+
+```
+
+sind x von y Datensätze gedroppt.
+
+
+
+
+
+
 
 
 ```{r}
@@ -80,6 +155,10 @@ FUUUUUUUUUUU
 
 
 # Deployment
+
+
+
+# Modell für WebService
 
 
 
